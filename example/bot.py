@@ -1,5 +1,5 @@
 from json import loads
-from requests import get
+from requests import get, post
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 
@@ -55,9 +55,9 @@ def command_lyrics(update, context):
   response_txt = str(get(url + title).text)
   response_json = loads(response_txt)
 
-  lyrics = response_json["lyrics"]
+  if ("lyrics" in response_json):
+    lyrics = response_json["lyrics"]
 
-  if ("lyrics" in lyrics):
     context.bot.send_message(
         chat_id=update.effective_chat.id, text=lyrics)
   else:
@@ -65,6 +65,30 @@ def command_lyrics(update, context):
         chat_id=update.effective_chat.id, text="I was not able to find lyrics for " + title)
 
 dispatcher.add_handler(CommandHandler("lyrics", command_lyrics))
+
+
+def command_gif(update, context):
+  tag = "cat"
+
+  if (len(context.args) >= 1):
+    tag = context.args[0]
+
+  url = "https://api.giphy.com/v1/gifs/random?api_key=iSN2eOFuUuoME2xyrnEJtQSxybCyw1Xt&rating=PG-13&tag="
+
+  context.bot.send_message(
+      chat_id=update.effective_chat.id, text="Loading random GIF of " + tag)
+
+  response_txt = str(get(url + tag).text)
+  response_json = loads(response_txt)
+
+  image = response_json["data"]["images"]["original"]["mp4"]
+
+  print(image)
+
+  context.bot.send_document(
+      chat_id=update.effective_chat.id, document=image)
+
+dispatcher.add_handler(CommandHandler("gif", command_gif))
 
 
 # Start the bot
