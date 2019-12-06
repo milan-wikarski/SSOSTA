@@ -71,7 +71,7 @@ def command_gif(update, context):
   tag = "cat"
 
   if (len(context.args) >= 1):
-    tag = context.args[0]
+    tag = " ".join(context.args)
 
   url = "https://api.giphy.com/v1/gifs/random?api_key=iSN2eOFuUuoME2xyrnEJtQSxybCyw1Xt&rating=PG-13&tag="
 
